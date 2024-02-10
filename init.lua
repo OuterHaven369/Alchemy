@@ -14,7 +14,7 @@ function M.setup()
 
   -- Dynamically loading flows
   for _, flow in ipairs(flows) do
-    local flow_module_path = 'plugins.Haven.lua.devos.flows.' .. flow
+    local flow_module_path = 'alchemy.flows.' .. flow
     core.register_flow(flow, require(flow_module_path))
   end
 
@@ -28,7 +28,7 @@ function M.setup()
 
   -- Dynamically loading modules
   for _, module in ipairs(modules) do
-    local module_path = 'plugins.DevOS.lua.devos.modules.' .. module
+    local module_path = 'alchemy.modules.' .. module
     _G[module] = require(module_path)
   end
 
@@ -36,10 +36,10 @@ function M.setup()
   vim.api.nvim_create_user_command('GenerateCode', function(opts)
     _G['code_generator'].generate(opts.args)
   end, {desc = 'Generate code using GPT-4', nargs = "*"})
-
+  
   vim.api.nvim_create_user_command('InvokeFlow', function(opts)
     core.invoke_flow(opts.args)
-  end, {desc = 'Invoke a DevOS flow', nargs = "*"})
+  end, {desc = 'Invoke a Alchemy flow', nargs = "*"})
 
   vim.api.nvim_create_user_command('RunTests', function(opts)
     _G['test_runner'].run(opts.args)
