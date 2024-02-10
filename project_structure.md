@@ -1,225 +1,164 @@
 ## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\Alchemy
 
 - `README.md`:
-    ```markdown
-    # Alchemy: Enhancing Neovim with AI
-    
-    Alchemy is a Neovim plugin designed to supercharge your development workflow by integrating advanced AI capabilities directly into your editor. Inspired by the transformative power of alchemy, this tool aims to turn your coding experience into gold, making it more efficient, intuitive, and enjoyable.
-    
-    ## Features
-    
-    - **AI Code Generation**: Generate code snippets on the fly based on brief descriptions of what you need.
-    - **Intelligent Code Completion**: Enhance your coding efficiency with AI-powered code completions.
-    - **Automated Refactoring**: Refactor your code with AI suggestions for improved readability and performance.
-    - **Dynamic Documentation**: Generate documentation automatically for your codebase using AI insights.
-    - **Test Assistance**: Get help writing tests for your code to ensure robustness and reliability.
-    
-    ## Installation
-    
-    ### Using LazyVim
-    
-    If you're using [LazyVim](https://github.com/LazyVim/LazyVim), add the following to your `lua/plugins/alchemy.lua`:
-    
-    ```lua
-    return {
-        {
-            "OuterHaven369/Alchemy",
-            requires = { -- list any dependencies here },
-            config = function()
-                require("alchemy").setup()
-            end,
-        },
-    }
-    ```
-    
-    Then, run `:LazyVimSync` or restart Neovim to sync and setup Alchemy.
-    
-    ### Manual Installation
-    
-    For manual installation, clone this repository and source the plugin in your Neovim configuration:
-    
-    ```sh
-    git clone https://github.com/OuterHaven369/Alchemy.git ~/.config/nvim/plugins/Alchemy
-    ```
-    
-    Then, add the following to your `init.lua` or equivalent Neovim configuration file:
-    
-    ```lua
-    require('alchemy').setup()
-    ```
-    
-    ## Usage
-    
-    Once installed, Alchemy can be configured to your liking. Visit the [documentation](https://github.com/OuterHaven369/Alchemy/wiki) for detailed instructions on configuring and using Alchemy to its full potential.
-    
-    # License Overview
-    
-    This project is generously offered under a dual-license model, designed to accommodate both open-source community projects and commercial initiatives. Our goal is to foster innovation and collaboration while also supporting the project's sustainable development.
-    
-    ## Open Source License
-    
-    For individuals, educational institutions, and non-profit organizations, this project is freely available under the [OPEN SOURCE LICENSE](LINK_TO_OPEN_SOURCE_LICENSE). This license encourages open collaboration, modification, and sharing, aligning with the core values of the open-source community. For detailed terms and conditions, please refer to the LICENSE file included in this repository.
-    
-    ## Commercial License
-    
-    For businesses and commercial entities seeking to integrate this project into their operations or products, a commercial license is required. This arrangement is designed to provide the flexibility and support necessary for commercial use, ensuring that your business needs are met while contributing to the ongoing development and improvement of the project. For inquiries about obtaining a commercial license, including pricing and terms, please contact us directly at [CONTACT INFORMATION](mailto:YOUR_EMAIL).
-    
-    We are committed to ensuring that this project remains accessible and beneficial to a wide range of users, from individual hobbyists to large enterprises. By adopting this dual-license approach, we aim to balance the need for open, collaborative development with the financial sustainability and growth of the project.
-    ```
-
 - `alchemy.lua`:
-    ```lua
-    local core = require('core')
-    print("Alchemy init.lua loaded", core)
-    
-    local M = {}
-    
-    function M.setup()
-      -- Corrected path for dynamically requiring flows
-      local flows = {"validation_flow", "feedback_loop_flow"}
-      for _, flow in ipairs(flows) do
-        local flow_module_path = 'alchemy.flows.' .. flow
-        core.register_flow(flow, require(flow_module_path))
-      end
-    
-      -- Corrected path for dynamically requiring modules
-      local modules = {"code_generator", "version_control", "test_runner"}
-      for _, module in ipairs(modules) do
-        local module_path = 'alchemy.modules.' .. module
-        _G[module] = require(module_path)
-      end
-    
-      -- Updated key mappings with `<leader>a` prefix
-      vim.api.nvim_create_user_command('AGenerateCode', function(opts)
-        _G['code_generator'].generate(opts.args)
-      end, {desc = 'Generate code using AI', nargs = "*"})
-      
-      vim.api.nvim_create_user_command('AInvokeFlow', function(opts)
-        core.invoke_flow(opts.args)
-      end, {desc = 'Invoke an Alchemy flow', nargs = "*"})
-      
-      vim.api.nvim_create_user_command('ARunTests', function(opts)
-        _G['test_runner'].run(opts.args)
-      end, {desc = 'Run tests', nargs = "*"})
-    
-      vim.api.nvim_set_keymap('n', '<leader>ag', ':AGenerateCode<CR>', {noremap = true, silent = true})
-      vim.api.nvim_set_keymap('n', '<leader>af', ':AInvokeFlow<CR>', {noremap = true, silent = true})
-      vim.api.nvim_set_keymap('n', '<leader>at', ':ARunTests<CR>', {noremap = true, silent = true})
+
+  ```lua
+  local core = require('core')
+  print("Alchemy init.lua loaded", core)
+
+  local M = {}
+
+  function M.setup()
+    -- Corrected path for dynamically requiring flows
+    local flows = {"validation_flow", "feedback_loop_flow"}
+    for _, flow in ipairs(flows) do
+      local flow_module_path = 'alchemy.flows.' .. flow
+      core.register_flow(flow, require(flow_module_path))
     end
-    
+
+    -- Corrected path for dynamically requiring modules
+    local modules = {"code_generator", "version_control", "test_runner"}
+    for _, module in ipairs(modules) do
+      local module_path = 'alchemy.modules.' .. module
+      _G[module] = require(module_path)
+    end
+
+    -- Updated key mappings with `<leader>a` prefix
+    vim.api.nvim_create_user_command('AGenerateCode', function(opts)
+      _G['code_generator'].generate(opts.args)
+    end, {desc = 'Generate code using AI', nargs = "*"})
+
+    vim.api.nvim_create_user_command('AInvokeFlow', function(opts)
+      core.invoke_flow(opts.args)
+    end, {desc = 'Invoke an Alchemy flow', nargs = "*"})
+
+    vim.api.nvim_create_user_command('ARunTests', function(opts)
+      _G['test_runner'].run(opts.args)
+    end, {desc = 'Run tests', nargs = "*"})
+
+    vim.api.nvim_set_keymap('n', '<leader>ag', ':AGenerateCode<CR>', {noremap = true, silent = true})
+    vim.api.nvim_set_keymap('n', '<leader>af', ':AInvokeFlow<CR>', {noremap = true, silent = true})
+    vim.api.nvim_set_keymap('n', '<leader>at', ':ARunTests<CR>', {noremap = true, silent = true})
+  end
+
+  return M
+  ```
+- `core.lua`:
+
+  ```lua
+  local M = {
+      flows = {}
+    }
+
+    function M.register_flow(name, flow)
+      M.flows[name] = flow
+    end
+
+    function M.invoke_flow(name, ...)
+      if M.flows[name] then
+        M.flows[name](...)
+      else
+        print("Unknown flow: " .. name)
+      end
+    end
+
+    return M
+        ```
+
+  ```
+- **flows/:**
+
+  - `feedback_loop.lua`:
+
+    ```lua
+    local M = {}
+
+    M.run = function()
+      print("Feedback Loop Flow Executed")
+      -- Implementation of feedback loop logic
+    end
+
     return M
     ```
+  - `validation_flow.lua`:
 
-- `core.lua`:
     ```lua
-    local M = {
-        flows = {}
-      }
-      
-      function M.register_flow(name, flow)
-        M.flows[name] = flow
-      end
-      
-      function M.invoke_flow(name, ...)
-        if M.flows[name] then
-          M.flows[name](...)
-        else
-          print("Unknown flow: " .. name)
-        end
-      end
-      
-      return M
-          ```
+    local M = {}
 
-- **flows/:**
-    - `feedback_loop.lua`:
-        ```lua
-        local M = {}
-        
-        M.run = function()
-          print("Feedback Loop Flow Executed")
-          -- Implementation of feedback loop logic
-        end
-        
-        return M
-        ```
+    M.run = function()
+      print("Validation Flow Executed")
+      -- Implementation of validation logic
+    end
 
-    - `validation_flow.lua`:
-        ```lua
-        local M = {}
-        
-        M.run = function()
-          print("Validation Flow Executed")
-          -- Implementation of validation logic
-        end
-        
-        return M
-        ```
-
-- **modules/:**
-    - `code_generator.lua`:
-        ```lua
-        local M = {}
-        
-        function M.generate(prompt)
-          -- Your OpenAI API Key
-          local api_key = "your_openai_api_key"
-        
-          local data = string.format([[
-            {
-              "prompt": %q,
-              "temperature": 0.7,
-              "max_tokens": 100,
-              "top_p": 1.0,
-              "frequency_penalty": 0,
-              "presence_penalty": 0
-            }
-          ]], prompt)
-        
-          local curl_cmd = string.format([[curl -s -X POST https://api.openai.com/v1/completions \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer %s" \
-            -d '%s']], api_key, data)
-        
-          local response = vim.fn.system(curl_cmd)
-        
-          if response then
-            local first_line = response:match("^.+")
-            print("Generated code: ", first_line)
-          else
-            print("Failed to generate code")
-          end
-        end
-        
-        return M
-        ```
-
-    - `test_runner.lua`:
-        ```lua
-        local M = {}
-        
-        function M.run_tests()
-          local result = vim.fn.system("python -m unittest discover")
-          print(result)
-        end
-        
-        return M
-        ```
-
-    - `version_control.lua`:
-        ```lua
-        local M = {}
-        
-        function M.commit(message)
-          local cmd = string.format("git commit -am %q", message)
-          local result = vim.fn.system(cmd)
-          print(result)
-        end
-        
-        return M
-        ```
-
-- `project_structure.md`:
-    ```markdown
+    return M
     ```
+- **modules/:**
 
+  - `code_generator.lua`:
+
+    ```lua
+    local M = {}
+
+    function M.generate(prompt)
+      -- Your OpenAI API Key
+      local api_key = "your_openai_api_key"
+
+      local data = string.format([[
+        {
+          "prompt": %q,
+          "temperature": 0.7,
+          "max_tokens": 100,
+          "top_p": 1.0,
+          "frequency_penalty": 0,
+          "presence_penalty": 0
+        }
+      ]], prompt)
+
+      local curl_cmd = string.format([[curl -s -X POST https://api.openai.com/v1/completions \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer %s" \
+        -d '%s']], api_key, data)
+
+      local response = vim.fn.system(curl_cmd)
+
+      if response then
+        local first_line = response:match("^.+")
+        print("Generated code: ", first_line)
+      else
+        print("Failed to generate code")
+      end
+    end
+
+    return M
+    ```
+  - `test_runner.lua`:
+
+    ```lua
+    local M = {}
+
+    function M.run_tests()
+      local result = vim.fn.system("python -m unittest discover")
+      print(result)
+    end
+
+    return M
+    ```
+  - `version_control.lua`:
+
+    ```lua
+    local M = {}
+
+    function M.commit(message)
+      local cmd = string.format("git commit -am %q", message)
+      local result = vim.fn.system(cmd)
+      print(result)
+    end
+
+    return M
+    ```
+- `project_structure.md`:
+
+  ```markdown
+
+  ```

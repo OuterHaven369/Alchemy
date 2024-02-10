@@ -4,21 +4,23 @@ print("Alchemy init.lua loaded", core)
 local M = {}
 
 function M.setup()
-  -- Corrected path for dynamically requiring flows
+  -- Dynamically requiring flows
   local flows = {"validation_flow", "feedback_loop_flow"}
   for _, flow in ipairs(flows) do
-    local flow_module_path = 'alchemy.flows.' .. flow
+    -- Corrected the path to be relative to the plugin's root directory
+    local flow_module_path = 'flows.' .. flow
     core.register_flow(flow, require(flow_module_path))
   end
 
-  -- Corrected path for dynamically requiring modules
+  -- Dynamically requiring modules
   local modules = {"code_generator", "version_control", "test_runner"}
   for _, module in ipairs(modules) do
-    local module_path = 'alchemy.modules.' .. module
+    -- Again, corrected the path to be relative
+    local module_path = 'modules.' .. module
     _G[module] = require(module_path)
   end
 
-  -- Updated key mappings with `<leader>a` prefix
+  -- Key mappings and commands remain the same
   vim.api.nvim_create_user_command('AGenerateCode', function(opts)
     _G['code_generator'].generate(opts.args)
   end, {desc = 'Generate code using AI', nargs = "*"})
