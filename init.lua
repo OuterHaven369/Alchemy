@@ -7,17 +7,17 @@ function M.setup()
   -- Dynamically requiring flows
   local flows = {"validation_flow", "feedback_loop_flow"}
   for _, flow in ipairs(flows) do
-    -- Corrected the path to be relative to the plugin's root directory
     local flow_module_path = 'flows.' .. flow
-    core.register_flow(flow, require(flow_module_path))
+    local flow_module = require(flow_module_path)
+    core.register_flow(flow, flow_module)
   end
 
-  -- Dynamically requiring modules
+  -- Dynamically requiring modules, making them accessible to flows
   local modules = {"code_generator", "version_control", "test_runner"}
-  for _, module in ipairs(modules) do
-    -- Again, corrected the path to be relative
-    local module_path = 'modules.' .. module
-    _G[module] = require(module_path)
+  for _, moduleName in ipairs(modules) do
+    local module_path = 'modules.' .. moduleName
+    local module = require(module_path)
+    core.register_module(moduleName, module)
   end
 
   -- Key mappings and commands remain the same
