@@ -3,7 +3,6 @@ local core = require('alchemy.core')
 print("Alchemy init.lua loaded", core)
 
 local M = {}
-print("local M = {} hit")
 
 function M.setup()
   -- Dynamically require flows
@@ -57,6 +56,4 @@ function M.setup()
   vim.api.nvim_set_keymap('n', '<leader>v', ':VersionControl<CR>', {noremap = true, silent = true})
 end
 
-print("return M hit")
-
-M.setup()
+return M
