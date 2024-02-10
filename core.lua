@@ -1,4 +1,4 @@
-local feedback_loop = require('plugins.DevOS.flows.feedback_loop')
+local feedback_loop = require('alchemy.flows.feedback_loop')
 
 local M = {
     flows = {}

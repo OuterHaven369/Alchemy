@@ -1,8 +1,22 @@
-## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\DevOS
+## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\Alchemy
+
+- `alchemy.lua`:
+    ```lua
+      -- lua/plugins/alchemy.lua
+    return {
+      {
+          "OuterHaven369/Alchemy",
+          requires = { -- list any dependencies here },
+          config = function()
+              require("alchemy").setup()
+          end,
+      },
+    }
+    ```
 
 - `core.lua`:
     ```lua
-    local feedback_loop = require('plugins.DevOS.flows.feedback_loop')
+    local feedback_loop = require('alchemy.flows.feedback_loop')
     
     local M = {
         flows = {}
@@ -21,29 +35,6 @@
       end
       
       return M
-          ```
-
-- `devos.lua`:
-    ```lua
-    -- lua/plugins/devos.lua
-    return {
-        {
-          "DevOSPlugin",
-          path = "C:\\Users\\Racin\\AppData\\Local\\nvim\\lua\\plugins\\devos", -- Adjust the path as necessary
-          config = function()
-            require("devos").setup()
-          end,
-        },
-      }
-      
-    
-      -- devos/plugin/devos.lua
-    if not pcall(require, "devos") then
-        print("Failed to load DevOS")
-        return
-      end
-      
-      require('devos').setup()
           ```
 
 - **flows/:**
@@ -74,9 +65,8 @@
 - `init.lua`:
     ```lua
     -- Correctly requiring the core module
-    local core = require('plugins.DevOS.core')
-    
-    print("DevOS init.lua hit", core)
+    local core = require('alchemy.core')
+    print("Alchemy init.lua loaded", core)
     
     local M = {}
     print("local M = {} hit")
@@ -91,7 +81,7 @@
     
       -- Dynamically loading flows
       for _, flow in ipairs(flows) do
-        local flow_module_path = 'plugins.DevOS.lua.devos.flows.' .. flow
+        local flow_module_path = 'plugins.Haven.lua.devos.flows.' .. flow
         core.register_flow(flow, require(flow_module_path))
       end
     
