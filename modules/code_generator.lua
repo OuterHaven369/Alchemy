@@ -1,8 +1,13 @@
 local M = {}
 
 function M.generate(prompt)
-  -- Your OpenAI API Key
-  local api_key = "your_openai_api_key"
+  -- Retrieve your OpenAI API Key from an environment variable for better security
+  local api_key = vim.fn.getenv("OPENAI_API_KEY")
+
+  if not api_key or api_key == "" then
+    print("OpenAI API Key is not set.")
+    return
+  end
 
   local data = string.format([[
     {
@@ -22,9 +27,18 @@ function M.generate(prompt)
 
   local response = vim.fn.system(curl_cmd)
 
-  if response then
-    local first_line = response:match("^.+")
-    print("Generated code: ", first_line)
+  -- Check for curl command success
+  local success = vim.v.shell_error == 0
+
+  if success and response then
+    -- Use vim.json to decode the response
+    local decoded_response = vim.json.decode(response)
+    if decoded_response.choices and #decoded_response.choices > 0 then
+      local generated_text = decoded_response.choices[1].text
+      print("Generated code: ", generated_text)
+    else
+      print("Failed to parse generated code from response.")
+    end
   else
     print("Failed to generate code")
   end
