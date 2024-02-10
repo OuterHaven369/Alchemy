@@ -1,3 +1,6 @@
+require("alchemy").setup()
+
+
 local core = require('alchemy.core')
 print("Alchemy init.lua loaded", core)
 
