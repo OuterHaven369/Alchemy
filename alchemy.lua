@@ -3,7 +3,7 @@ print("Alchemy init.lua loaded", core)
 
 local M = {}
 
-function M.setup()
+function M.setup(opts)
   print("Starting Alchemy setup...")
 
   -- Dynamically requiring flows
@@ -48,7 +48,7 @@ function M.setup()
   vim.api.nvim_set_keymap('n', '<leader>af', ':AInvokeFlow<CR>', {noremap = true, silent = true})
   vim.api.nvim_set_keymap('n', '<leader>at', ':ARunTests<CR>', {noremap = true, silent = true})
 
-  print("Alchemy setup complete.")
+  print("Alchemy plugin setup with options:", opts)
 end
 
 return M

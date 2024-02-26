@@ -196,8 +196,9 @@
         ```lua
         local M = {}
         
+        
         function M.generate(prompt)
-          -- Retrieve your OpenAI API Key from an environment variable for better security
+          print("Generating code for prompt:", prompt)
           local api_key = vim.fn.getenv("OPENAI_API_KEY")
         
           if not api_key or api_key == "" then
@@ -227,7 +228,6 @@
           local success = vim.v.shell_error == 0
         
           if success and response then
-            -- Use vim.json to decode the response
             local decoded_response = vim.json.decode(response)
             if decoded_response.choices and #decoded_response.choices > 0 then
               local generated_text = decoded_response.choices[1].text
@@ -247,8 +247,9 @@
         local M = {}
         
         function M.run_tests()
+          print("Running tests...")
           local result = vim.fn.system("python -m unittest discover")
-          print(result)
+          print("Test results:", result)
         end
         
         return M
@@ -259,9 +260,10 @@
         local M = {}
         
         function M.commit(message)
+          print("Committing with message:", message)
           local cmd = string.format("git commit -am %q", message)
           local result = vim.fn.system(cmd)
-          print(result)
+          print("Commit result:", result)
         end
         
         return M
