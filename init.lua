@@ -4,13 +4,13 @@ print("Alchemy init.lua loaded", core)
 local M = {}
 
 -- Registering modules
-local modules = {"code_generator", "version_control", "test_runner", "code_analyzer", "documentation_generator"}
+local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
 for _, moduleName in ipairs(modules) do
-  local module_path = 'modules.' .. moduleName
-  print("Requiring module:", module_path)
-  local module = require(module_path)
-  core.register_module(moduleName, module)
-  print("Registered module:", moduleName)
+    local module_path = 'modules.' .. moduleName
+    print("Requiring module:", module_path)
+    local module = require(module_path)
+    core.register_module(moduleName, module)
+    print("Registered module:", moduleName)
 end
 print("Dynamic modules loaded")
 

@@ -1,72 +1,5 @@
 ## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\Alchemy
 
-- `README.md`:
-    ```markdown
-    # Alchemy: Enhancing Neovim with AI
-    
-    Alchemy is a Neovim plugin designed to supercharge your development workflow by integrating advanced AI capabilities directly into your editor. Inspired by the transformative power of alchemy, this tool aims to turn your coding experience into gold, making it more efficient, intuitive, and enjoyable.
-    
-    ## Features
-    
-    - **AI Code Generation**: Generate code snippets on the fly based on brief descriptions of what you need.
-    - **Intelligent Code Completion**: Enhance your coding efficiency with AI-powered code completions.
-    - **Automated Refactoring**: Refactor your code with AI suggestions for improved readability and performance.
-    - **Dynamic Documentation**: Generate documentation automatically for your codebase using AI insights.
-    - **Test Assistance**: Get help writing tests for your code to ensure robustness and reliability.
-    
-    ## Installation
-    
-    ### Using LazyVim
-    
-    If you're using [LazyVim](https://github.com/LazyVim/LazyVim), add the following to your `lua/plugins/alchemy.lua`:
-    
-    ```lua
-    return {
-        {
-            "OuterHaven369/Alchemy",
-            requires = { -- list any dependencies here },
-            config = function()
-                require("alchemy").setup()
-            end,
-        },
-    }
-    ```
-    
-    Then, run `:LazyVimSync` or restart Neovim to sync and setup Alchemy.
-    
-    ### Manual Installation
-    
-    For manual installation, clone this repository and source the plugin in your Neovim configuration:
-    
-    ```sh
-    git clone https://github.com/OuterHaven369/Alchemy.git ~/.config/nvim/plugins/Alchemy
-    ```
-    
-    Then, add the following to your `init.lua` or equivalent Neovim configuration file:
-    
-    ```lua
-    require('alchemy').setup()
-    ```
-    
-    ## Usage
-    
-    Once installed, Alchemy can be configured to your liking. Visit the [documentation](https://github.com/OuterHaven369/Alchemy/wiki) for detailed instructions on configuring and using Alchemy to its full potential.
-    
-    # License Overview
-    
-    This project is generously offered under a dual-license model, designed to accommodate both open-source community projects and commercial initiatives. Our goal is to foster innovation and collaboration while also supporting the project's sustainable development.
-    
-    ## Open Source License
-    
-    For individuals, educational institutions, and non-profit organizations, this project is freely available under the [OPEN SOURCE LICENSE](LINK_TO_OPEN_SOURCE_LICENSE). This license encourages open collaboration, modification, and sharing, aligning with the core values of the open-source community. For detailed terms and conditions, please refer to the LICENSE file included in this repository.
-    
-    ## Commercial License
-    
-    For businesses and commercial entities seeking to integrate this project into their operations or products, a commercial license is required. This arrangement is designed to provide the flexibility and support necessary for commercial use, ensuring that your business needs are met while contributing to the ongoing development and improvement of the project. For inquiries about obtaining a commercial license, including pricing and terms, please contact us directly at [CONTACT INFORMATION](mailto:YOUR_EMAIL).
-    
-    We are committed to ensuring that this project remains accessible and beneficial to a wide range of users, from individual hobbyists to large enterprises. By adopting this dual-license approach, we aim to balance the need for open, collaborative development with the financial sustainability and growth of the project.
-    ```
-
 - `core.lua`:
     ```lua
     local M = {
@@ -162,6 +95,17 @@
     
     local M = {}
     
+    -- Registering modules
+    local modules = {"code_generator", "version_control", "test_runner", "code_analyzer", "documentation_generator"}
+    for _, moduleName in ipairs(modules) do
+      local module_path = 'modules.' .. moduleName
+      print("Requiring module:", module_path)
+      local module = require(module_path)
+      core.register_module(moduleName, module)
+      print("Registered module:", moduleName)
+    end
+    print("Dynamic modules loaded")
+    
     function M.setup(opts)
       print("Starting Alchemy setup...")
       
@@ -187,6 +131,17 @@
           _G['test_runner'].run(opts.args)
         end, {desc = 'Run tests', nargs = "*"})
     
+        vim.api.nvim_create_user_command('AAnalyzeCode', function(opts)
+          print("AAnalyzeCode command invoked with args:", opts.args)
+          _G['code_analyzer'].analyze_code(opts.args)
+        end, {desc = 'Analyze code for improvements and potential bugs', nargs = "*"})
+    
+        vim.api.nvim_create_user_command('AGenerateDocumentation', function(opts)
+          print("AGenerateDocumentation command invoked with args:", opts.args)
+          _G['documentation_generator'].generate_documentation(opts.args)
+        end, {desc = 'Generate documentation for the codebase', nargs = "*"})
+        
+    
         vim.api.nvim_set_keymap('n', '<leader>ag', ':AGenerateCode<CR>', {noremap = true, silent = true})
         print("Keymap set: Press '<leader>ag' to generate code or use ':AGenerateCode' command.")
     
@@ -208,17 +163,6 @@
       end
       print("Dynamic flows loaded")
     
-      -- Dynamically requiring modules, making them accessible to flows
-      local modules = {"code_generator", "version_control", "test_runner"}
-      for _, moduleName in ipairs(modules) do
-        local module_path = 'modules.' .. moduleName
-        print("Requiring module:", module_path)
-        local module = require(module_path)
-        core.register_module(moduleName, module)
-        print("Registered module:", moduleName)
-      end
-      print("Dynamic modules loaded")
-    
       print("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
     end
     
@@ -226,6 +170,27 @@
     ```
 
 - **modules/:**
+    - `ai_integration.lua`:
+        ```lua
+        -- Import the AI integration module
+        local ai_integration = require("ai_integration")
+        
+        -- Bind a key to interact with the AI
+        api.nvim_set_keymap('n', '<leader>i', ':lua require("ai_integration").interact_with_ai(vim.fn.input("Message: "))<CR>', { noremap = true, silent = true })
+        ```
+
+    - `code_analyzer.lua`:
+        ```lua
+        local M = {}
+        
+        function M.analyze_code()
+            print("Analyzing code...")
+            -- Implementation of code analysis logic
+        end
+        
+        return M
+        ```
+
     - `code_generator.lua`:
         ```lua
         local M = {}
@@ -276,6 +241,18 @@
         
         return M        ```
 
+    - `documentation_generator.lua`:
+        ```lua
+        local M = {}
+        
+        function M.generate_documentation()
+            print("Generating documentation...")
+            -- Implementation of documentation generation logic
+        end
+        
+        return M
+        ```
+
     - `test_runner.lua`:
         ```lua
         local M = {}
@@ -302,8 +279,4 @@
         
         return M
         ```
-
-- `project_structure.md`:
-    ```markdown
-    ```
 
