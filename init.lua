@@ -3,6 +3,17 @@ print("Alchemy init.lua loaded", core)
 
 local M = {}
 
+-- Registering modules
+local modules = {"code_generator", "version_control", "test_runner", "code_analyzer", "documentation_generator"}
+for _, moduleName in ipairs(modules) do
+  local module_path = 'modules.' .. moduleName
+  print("Requiring module:", module_path)
+  local module = require(module_path)
+  core.register_module(moduleName, module)
+  print("Registered module:", moduleName)
+end
+print("Dynamic modules loaded")
+
 function M.setup(opts)
   print("Starting Alchemy setup...")
   
@@ -28,6 +39,17 @@ function M.setup(opts)
       _G['test_runner'].run(opts.args)
     end, {desc = 'Run tests', nargs = "*"})
 
+    vim.api.nvim_create_user_command('AAnalyzeCode', function(opts)
+      print("AAnalyzeCode command invoked with args:", opts.args)
+      _G['code_analyzer'].analyze_code(opts.args)
+    end, {desc = 'Analyze code for improvements and potential bugs', nargs = "*"})
+
+    vim.api.nvim_create_user_command('AGenerateDocumentation', function(opts)
+      print("AGenerateDocumentation command invoked with args:", opts.args)
+      _G['documentation_generator'].generate_documentation(opts.args)
+    end, {desc = 'Generate documentation for the codebase', nargs = "*"})
+    
+
     vim.api.nvim_set_keymap('n', '<leader>ag', ':AGenerateCode<CR>', {noremap = true, silent = true})
     print("Keymap set: Press '<leader>ag' to generate code or use ':AGenerateCode' command.")
 
@@ -48,17 +70,6 @@ function M.setup(opts)
     print("Registered flow:", flow)
   end
   print("Dynamic flows loaded")
-
-  -- Dynamically requiring modules, making them accessible to flows
-  local modules = {"code_generator", "version_control", "test_runner"}
-  for _, moduleName in ipairs(modules) do
-    local module_path = 'modules.' .. moduleName
-    print("Requiring module:", module_path)
-    local module = require(module_path)
-    core.register_module(moduleName, module)
-    print("Registered module:", moduleName)
-  end
-  print("Dynamic modules loaded")
 
   print("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
 end
