@@ -1,7 +1,8 @@
 local M = {}
 
+
 function M.generate(prompt)
-  -- Retrieve your OpenAI API Key from an environment variable for better security
+  print("Generating code for prompt:", prompt)
   local api_key = vim.fn.getenv("OPENAI_API_KEY")
 
   if not api_key or api_key == "" then
@@ -31,7 +32,6 @@ function M.generate(prompt)
   local success = vim.v.shell_error == 0
 
   if success and response then
-    -- Use vim.json to decode the response
     local decoded_response = vim.json.decode(response)
     if decoded_response.choices and #decoded_response.choices > 0 then
       local generated_text = decoded_response.choices[1].text
