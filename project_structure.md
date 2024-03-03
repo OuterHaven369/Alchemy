@@ -240,9 +240,8 @@
                 -- Bind a key to interact with the AI
                 api.nvim_set_keymap('n', '<leader>i', ':lua require("alchemy.modules.ai_integration").interact_with_ai(vim.fn.input("Message: "))<CR>', { noremap = true, silent = true })
                 
-                return {
-                    interact_with_ai = interact_with_ai
-                }
+                return M
+                
                 ```
 
             - `code_analyzer.lua`:

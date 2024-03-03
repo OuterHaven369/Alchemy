@@ -1,3 +1,5 @@
+local M = {}
+
 local core = require('alchemy.core')
 print("Configuring Alchemy...")
 
@@ -8,6 +10,9 @@ for _, moduleName in ipairs(modules) do
     core.register_module(moduleName) -- Corrected, no additional parameter needed
 end
 print("Dynamic modules loaded")
+
+
+
 
 function M.setup(opts)
     opts = opts or {}

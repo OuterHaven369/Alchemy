@@ -1,6 +1,6 @@
-local M = {
-  flows = {},
-  modules = {}
+local M = M or {  -- Check if M is already defined, if not, initialize it as an empty table
+    flows = {},
+    modules = {}
 }
 
 function M.require_flow(flow_name)
