@@ -5,8 +5,8 @@
         - `core.lua`:
             ```lua
             local M = {
-              flows = {},
-              modules = {}
+                flows = {},
+                modules = {}
             }
             
             function M.require_flow(flow_name)
@@ -42,7 +42,7 @@
             function M.invoke_flow(name, ...)
                 print("Invoking flow:", name)
                 if M.flows[name] then
-                    M.flows[name](...)
+                    local flow = M.flows[name]
                     print("Flow invoked successfully:", name)
                 else
                     print("Unknown flow:", name)
@@ -59,7 +59,8 @@
                 end
             end
             
-            return M            ```
+            return M
+            ```
 
         - **flows/:**
             - `feedback_loop.lua`:
@@ -88,6 +89,8 @@
 
         - `init.lua`:
             ```lua
+            local M = M or {}
+            
             local core = require('alchemy.core')
             print("Configuring Alchemy...")
             
@@ -98,6 +101,9 @@
                 core.register_module(moduleName) -- Corrected, no additional parameter needed
             end
             print("Dynamic modules loaded")
+            
+            
+            
             
             function M.setup(opts)
                 opts = opts or {}
