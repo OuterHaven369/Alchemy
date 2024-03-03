@@ -1,14 +1,5 @@
 ## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\Alchemy
 
-- **.vscode/:**
-    - `settings.json`:
-        ```json
-        {
-            "Lua.diagnostics.globals": [
-                "vim"
-            ]
-        }        ```
-
 - **lua/:**
     - **alchemy/:**
         - `core.lua`:

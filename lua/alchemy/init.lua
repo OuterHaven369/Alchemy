@@ -1,16 +1,11 @@
 local core = require('alchemy.core')
-print("Alchemy init.lua loaded", core)
-
-local M = {}
-M.config = {
-    api_key = "", -- Default is empty, should be set by user
-}
+print("Configuring Alchemy...")
 
 -- Registering modules
 local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
 for _, moduleName in ipairs(modules) do
     print("Registering module:", moduleName)
-    core.register_module(moduleName) -- Fixed to match the core's method signature
+    core.register_module(moduleName) -- Corrected, no additional parameter needed
 end
 print("Dynamic modules loaded")
 
