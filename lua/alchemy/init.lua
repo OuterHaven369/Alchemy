@@ -1,7 +1,10 @@
-local core = require('alchemy.core') -- Ensure this matches the path to your core module
+local core = require('alchemy.core')
 print("Alchemy init.lua loaded", core)
 
 local M = {}
+M.config = {
+    api_key = "", -- Default is empty, should be set by user
+}
 
 -- Registering modules
 local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
@@ -12,6 +15,8 @@ end
 print("Dynamic modules loaded")
 
 function M.setup(opts)
+    opts = opts or {}
+    M.config = vim.tbl_extend('force', M.config, opts)
     print("Starting Alchemy setup...")
 
     opts = opts or {}
@@ -22,7 +27,7 @@ function M.setup(opts)
     print("Alchemy configured with options:", vim.inspect(opts))
     
     -- Example: Setup key mappings only if not disabled by opts
-    if not opts.disableKeyMappings then
+    if not M.config.disableKeyMappings then
         -- Key mappings and commands
         vim.api.nvim_create_user_command('AGenerateCode', function(opts)
             local code_generator = core.get_module('code_generator') -- Correct way to access modules
@@ -64,13 +69,16 @@ function M.setup(opts)
         vim.api.nvim_set_keymap('n', '<leader>at', ':ARunTests<CR>', {noremap = true, silent = true})
     end
 
-    -- Dynamically requiring flows
+    -- Dynamically requiring and registering flows and modules...
+    local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
+    for _, moduleName in ipairs(modules) do
+        core.register_module(moduleName)
+    end
+    
     local flows = {"validation_flow", "feedback_loop"}
     for _, flowName in ipairs(flows) do
-        print("Registering flow:", flowName)
-        core.register_flow(flowName) -- Adjusted to match the register_flow method signature
+        core.register_flow(flowName)
     end
-    print("Dynamic flows loaded")
 
     print("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
 end

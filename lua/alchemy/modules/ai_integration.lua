@@ -1,10 +1,21 @@
+-- ai_integration.lua
+local M = {}
+local config = require('alchemy').config
+
 -- Import the necessary modules
 local api = vim.api
 local http = require("socket.http")
-local json = require("json")
+local ltn12 = require("ltn12")
+local json = require("dkjson")  -- Ensure you are using a Lua JSON library that you have installed.
 
 -- Function to interact with the OpenAI chatbot
-local function interact_with_ai(message)
+function M.interact_with_ai(message)
+    local api_key = vim.fn.getenv("OPENAI_API_KEY")  -- Use an environment variable for the API key.
+    if not api_key then
+        print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
+        return
+    end
+
     local url = "https://api.openai.com/v1/chat/completions"
     local headers = {
         ["Content-Type"] = "application/json",

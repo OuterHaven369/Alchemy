@@ -1,7 +1,7 @@
 ## Project Directory Structure of C:\Users\Racin\Code\Projects\.Library\Alchemy
 
 - **lua/:**
-    - **Alchemy/:**
+    - **alchemy/:**
         - `core.lua`:
             ```lua
             local M = {
@@ -88,10 +88,13 @@
 
         - `init.lua`:
             ```lua
-            local core = require('alchemy.core') -- Ensure this matches the path to your core module
+            local core = require('alchemy.core')
             print("Alchemy init.lua loaded", core)
             
             local M = {}
+            M.config = {
+                api_key = "", -- Default is empty, should be set by user
+            }
             
             -- Registering modules
             local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
@@ -102,18 +105,26 @@
             print("Dynamic modules loaded")
             
             function M.setup(opts)
+                opts = opts or {}
+                M.config = vim.tbl_extend('force', M.config, opts)
                 print("Starting Alchemy setup...")
             
                 opts = opts or {}
+                print("Before setting disableKeyMappings:", vim.inspect(opts))
+                local disableKeyMappings = opts.disableKeyMappings or false
+                print("After setting disableKeyMappings:", disableKeyMappings)
+                
                 print("Alchemy configured with options:", vim.inspect(opts))
-            
+                
                 -- Example: Setup key mappings only if not disabled by opts
-                if not opts.disableKeyMappings then
+                if not M.config.disableKeyMappings then
                     -- Key mappings and commands
                     vim.api.nvim_create_user_command('AGenerateCode', function(opts)
                         local code_generator = core.get_module('code_generator') -- Correct way to access modules
                         if code_generator then
                             code_generator.generate(opts.args)
+                        else
+                            print("Error: code_generator module not found")
                         end
                     end, {desc = 'Generate code using AI', nargs = "*"})
                     
@@ -148,13 +159,16 @@
                     vim.api.nvim_set_keymap('n', '<leader>at', ':ARunTests<CR>', {noremap = true, silent = true})
                 end
             
-                -- Dynamically requiring flows
+                -- Dynamically requiring and registering flows and modules...
+                local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
+                for _, moduleName in ipairs(modules) do
+                    core.register_module(moduleName)
+                end
+                
                 local flows = {"validation_flow", "feedback_loop"}
                 for _, flowName in ipairs(flows) do
-                    print("Registering flow:", flowName)
-                    core.register_flow(flowName) -- Adjusted to match the register_flow method signature
+                    core.register_flow(flowName)
                 end
-                print("Dynamic flows loaded")
             
                 print("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
             end
@@ -165,13 +179,24 @@
         - **modules/:**
             - `ai_integration.lua`:
                 ```lua
+                -- ai_integration.lua
+                local M = {}
+                local config = require('alchemy').config
+                
                 -- Import the necessary modules
                 local api = vim.api
                 local http = require("socket.http")
-                local json = require("json")
+                local ltn12 = require("ltn12")
+                local json = require("dkjson")  -- Ensure you are using a Lua JSON library that you have installed.
                 
                 -- Function to interact with the OpenAI chatbot
-                local function interact_with_ai(message)
+                function M.interact_with_ai(message)
+                    local api_key = vim.fn.getenv("OPENAI_API_KEY")  -- Use an environment variable for the API key.
+                    if not api_key then
+                        print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
+                        return
+                    end
+                
                     local url = "https://api.openai.com/v1/chat/completions"
                     local headers = {
                         ["Content-Type"] = "application/json",
@@ -323,7 +348,10 @@
                 return M
                 ```
 
-    - `your_plugin.lua`:
+    - `main.lua`:
         ```lua
+        require('alchemy').setup({
+            api_key = vim.fn.getenv("OPENAI_API_KEY")
+        })
         ```
 
