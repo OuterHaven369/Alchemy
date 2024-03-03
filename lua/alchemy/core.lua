@@ -1,4 +1,4 @@
-local M = M or {  -- Check if M is already defined, if not, initialize it as an empty table
+local M = {
     flows = {},
     modules = {}
 }
@@ -36,7 +36,7 @@ end
 function M.invoke_flow(name, ...)
     print("Invoking flow:", name)
     if M.flows[name] then
-        M.flows[name](...)
+        local flow = M.flows[name]
         print("Flow invoked successfully:", name)
     else
         print("Unknown flow:", name)

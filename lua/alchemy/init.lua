@@ -1,4 +1,4 @@
-local M = {}
+local M = M or {}
 
 local core = require('alchemy.core')
 print("Configuring Alchemy...")
