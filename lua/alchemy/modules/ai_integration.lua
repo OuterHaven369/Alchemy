@@ -1,25 +1,25 @@
 -- ai_integration.lua
 local M = {}
-local config = require('alchemy').config
+local config = require('alchemy').config  -- Assuming 'alchemy' is the namespace for your plugin.
 
 -- Import the necessary modules
 local api = vim.api
 local http = require("socket.http")
 local ltn12 = require("ltn12")
-local json = require("dkjson")  -- Ensure you are using a Lua JSON library that you have installed.
+local json = require("dkjson")  -- Ensure this Lua JSON library is installed.
 
 -- Function to interact with the OpenAI chatbot
 function M.interact_with_ai(message)
-    local api_key = vim.fn.getenv("OPENAI_API_KEY")  -- Use an environment variable for the API key.
-    if not api_key then
-        print("OpenAI API key is not set. Please set the OPENAI_API_KEY environment variable.")
+    local api_key = config.api_key  -- Use the API key from plugin configuration.
+    if not api_key or api_key == "" then
+        print("API key is not set. Please configure the API key through the plugin setup.")
         return
     end
 
     local url = "https://api.openai.com/v1/chat/completions"
     local headers = {
         ["Content-Type"] = "application/json",
-        ["Authorization"] = "Bearer YOUR_API_KEY" -- Replace 'YOUR_API_KEY' with your OpenAI API key
+        ["Authorization"] = "Bearer " .. api_key  -- Use the actual API key.
     }
     local body = json.encode({
         model = "gpt-4",
@@ -34,33 +34,36 @@ function M.interact_with_ai(message)
         presence_penalty = 0
     })
 
-    -- Send request to OpenAI API
-    local res, err = http.request {
+    -- Prepare the response container and send request to OpenAI API
+    local response_body = {}
+    local res, code, response_headers = http.request {
         url = url,
         method = "POST",
         headers = headers,
-        source = ltn12.source.string(body)
+        source = ltn12.source.string(body),
+        sink = ltn12.sink.table(response_body)
     }
 
     if not res then
-        print("Error:", err)
+        print("Error sending request to OpenAI:", err)
         return
     end
 
-    -- Decode JSON response
-    local response = json.decode(res)
+    response_body = table.concat(response_body)  -- Convert response body table to string
+    local response = json.decode(response_body)
 
-    -- Get AI response
-    local ai_response = response.choices[1].message.content
-
-    -- Append AI response to chat window
-    api.nvim_buf_set_lines(0, -1, -1, false, { ai_response })
+    -- Extract and display the AI response
+    if response and response.choices and #response.choices > 0 then
+        local ai_response = response.choices[1].message.content
+        api.nvim_buf_set_lines(0, -1, -1, false, { ai_response })
+    else
+        print("Failed to get a valid response from AI.")
+    end
 end
 
 -- Bind a key to interact with the AI
-api.nvim_set_keymap('n', '<leader>i', ':lua interact_with_ai(vim.fn.input("Message: "))<CR>', { noremap = true, silent = true })
+api.nvim_set_keymap('n', '<leader>i', ':lua require("alchemy.modules.ai_integration").interact_with_ai(vim.fn.input("Message: "))<CR>', { noremap = true, silent = true })
 
--- Export the function to be used in the configuration
 return {
     interact_with_ai = interact_with_ai
 }

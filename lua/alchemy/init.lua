@@ -17,7 +17,7 @@ print("Dynamic modules loaded")
 function M.setup(opts)
     opts = opts or {}
     M.config = vim.tbl_extend('force', M.config, opts)
-    print("Starting Alchemy setup...")
+    print("Starting Alchemy setup with options:", vim.inspect(M.config))
 
     opts = opts or {}
     print("Before setting disableKeyMappings:", vim.inspect(opts))
