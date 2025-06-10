@@ -1,9 +1,9 @@
 local M = {}
-
+local config = require('alchemy').config
 
 function M.generate(prompt)
   print("Generating code for prompt:", prompt)
-  local api_key = vim.fn.getenv("OPENAI_API_KEY")
+  local api_key = config.api_key or vim.fn.getenv("OPENAI_API_KEY")
 
   if not api_key or api_key == "" then
     print("OpenAI API Key is not set.")
