@@ -1,7 +1,8 @@
 local M = {}
+local log = require('alchemy.log')
 
 function M.generate_documentation()
-    print("Generating documentation...")
+    log.debug("Generating documentation...")
     -- Implementation of documentation generation logic
 end
 

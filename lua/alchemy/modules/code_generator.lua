@@ -1,12 +1,13 @@
 local M = {}
 local config = require('alchemy').config
+local log = require('alchemy.log')
 
 function M.generate(prompt)
-  print("Generating code for prompt:", prompt)
+  log.debug("Generating code for prompt:", prompt)
   local api_key = config.api_key or vim.fn.getenv("OPENAI_API_KEY")
 
   if not api_key or api_key == "" then
-    print("OpenAI API Key is not set.")
+    log.debug("OpenAI API Key is not set.")
     return
   end
 
@@ -35,12 +36,12 @@ function M.generate(prompt)
     local decoded_response = vim.json.decode(response)
     if decoded_response.choices and #decoded_response.choices > 0 then
       local generated_text = decoded_response.choices[1].text
-      print("Generated code: ", generated_text)
+      log.debug("Generated code: ", generated_text)
     else
-      print("Failed to parse generated code from response.")
+      log.debug("Failed to parse generated code from response.")
     end
   else
-    print("Failed to generate code")
+    log.debug("Failed to generate code")
   end
 end
 

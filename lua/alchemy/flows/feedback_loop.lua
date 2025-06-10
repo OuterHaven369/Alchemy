@@ -1,7 +1,8 @@
 local M = {}
 
 M.run = function()
-  print("Feedback Loop Flow Executed")
+  local log = require('alchemy.log')
+  log.debug("Feedback Loop Flow Executed")
   -- Implementation of feedback loop logic
 end
 

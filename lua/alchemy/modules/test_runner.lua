@@ -1,9 +1,10 @@
 local M = {}
+local log = require('alchemy.log')
 
 function M.run_tests()
-  print("Running tests...")
+  log.debug("Running tests...")
   local result = vim.fn.system("python -m unittest discover")
-  print("Test results:", result)
+  log.debug("Test results:", result)
 end
 
 return M

@@ -1,7 +1,8 @@
 local M = {}
 
 M.run = function()
-  print("Validation Flow Executed")
+  local log = require('alchemy.log')
+  log.debug("Validation Flow Executed")
   -- Implementation of validation logic here
 end
 

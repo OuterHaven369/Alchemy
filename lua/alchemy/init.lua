@@ -3,20 +3,22 @@ local M = {
         disableKeyMappings = false,
         ai_provider = 'openai',
         model = 'gpt-4',
-        api_key = nil
+        api_key = nil,
+        debug = false,
     }
 }
 
+local log = require('alchemy.log')
 local core = require('alchemy.core')
-print("Configuring Alchemy...")
+log.debug("Configuring Alchemy...")
 
 -- Registering modules
 local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control", "flow_manager"}
 for _, moduleName in ipairs(modules) do
-    print("Registering module:", moduleName)
+    log.debug("Registering module:", moduleName)
     core.register_module(moduleName) -- Corrected, no additional parameter needed
 end
-print("Dynamic modules loaded")
+log.debug("Dynamic modules loaded")
 
 
 
@@ -24,14 +26,15 @@ print("Dynamic modules loaded")
 function M.setup(opts)
     opts = opts or {}
     M.config = vim.tbl_extend('force', M.config, opts)
-    print("Starting Alchemy setup with options:", vim.inspect(M.config))
+    log.set_config(M.config)
+    log.debug("Starting Alchemy setup with options:", vim.inspect(M.config))
 
     opts = opts or {}
-    print("Before setting disableKeyMappings:", vim.inspect(opts))
+    log.debug("Before setting disableKeyMappings:", vim.inspect(opts))
     local disableKeyMappings = opts.disableKeyMappings or false
-    print("After setting disableKeyMappings:", disableKeyMappings)
-    
-    print("Alchemy configured with options:", vim.inspect(opts))
+    log.debug("After setting disableKeyMappings:", disableKeyMappings)
+
+    log.debug("Alchemy configured with options:", vim.inspect(opts))
     
     -- Example: Setup key mappings only if not disabled by opts
     if not M.config.disableKeyMappings then
@@ -41,7 +44,7 @@ function M.setup(opts)
             if code_generator then
                 code_generator.generate(opts.args)
             else
-                print("Error: code_generator module not found")
+                log.debug("Error: code_generator module not found")
             end
         end, {desc = 'Generate code using AI', nargs = "*"})
         
@@ -123,7 +126,7 @@ function M.setup(opts)
         core.register_flow(flowName)
     end
 
-    print("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
+    log.debug("Alchemy setup complete. Use the key mappings or commands to interact with the plugin.")
 end
 
 return M
