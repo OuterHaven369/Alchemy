@@ -92,6 +92,15 @@ flow_manager.schedule_flow('parent', 3600)
 flow_manager.create_flow_from_ai('ai-generated', 'Create a video loop and upload it')
 ```
 
+## Running Tests
+
+The test suite uses [busted](https://olivinelabs.com/busted/) to verify basic
+flow management features. After installing `busted`, run:
+
+```sh
+busted tests
+```
+
 # License Overview
 
 This project is generously offered under a dual-license model, designed to accommodate both open-source community projects and commercial initiatives. Our goal is to foster innovation and collaboration while also supporting the project's sustainable development.
