@@ -9,6 +9,8 @@ Alchemy is a Neovim plugin designed to supercharge your development workflow by 
 - **Automated Refactoring**: Refactor your code with AI suggestions for improved readability and performance.
 - **Dynamic Documentation**: Generate documentation automatically for your codebase using AI insights.
 - **Test Assistance**: Get help writing tests for your code to ensure robustness and reliability.
+- **Configurable AI Models**: Choose the AI provider and model used for each flow.
+- **Automated Hierarchical Flows**: Chain flows together and schedule them to run in the background.
 
 ## Installation
 
@@ -47,6 +49,43 @@ require('alchemy').setup()
 ## Usage
 
 Once installed, Alchemy can be configured to your liking. Visit the [documentation](https://github.com/OuterHaven369/Alchemy/wiki) for detailed instructions on configuring and using Alchemy to its full potential.
+
+### Customizing AI Providers and Flows
+
+Alchemy now lets you specify which AI provider and model should power a particular flow. Pass `ai_provider` and `model` when calling `setup` or when creating flows with the flow manager.
+
+```lua
+require('alchemy').setup({
+    ai_provider = 'openai',
+    model = 'gpt-4'
+})
+
+-- example of creating a custom flow
+local flow_manager = require('alchemy.modules.flow_manager')
+flow_manager.create_flow('my-flow', {
+    instructions = 'Describe the steps here',
+    model = 'gpt-4'
+})
+```
+
+### Automated and Hierarchical Flows
+
+You can chain flows together and schedule them to run in the background. Use `add_subflow` to create a hierarchy and `schedule_flow` to execute flows on a timer.
+
+```lua
+-- create flows
+flow_manager.create_flow('parent')
+flow_manager.create_flow('child')
+
+-- set up hierarchy
+flow_manager.add_subflow('parent', 'child')
+
+-- run every hour
+flow_manager.schedule_flow('parent', 3600)
+
+-- generate a flow from the AI
+flow_manager.create_flow_from_ai('ai-generated', 'Create a video loop and upload it')
+```
 
 # License Overview
 

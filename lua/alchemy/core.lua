@@ -37,9 +37,18 @@ function M.invoke_flow(name, ...)
     print("Invoking flow:", name)
     if M.flows[name] then
         local flow = M.flows[name]
+        if type(flow.run) == 'function' then
+            flow.run(...)
+        end
         print("Flow invoked successfully:", name)
     else
-        print("Unknown flow:", name)
+        local fm = M.modules['flow_manager']
+        if fm and fm.flows[name] then
+            fm.run_flow(name, ...)
+            print("Flow invoked successfully:", name)
+        else
+            print("Unknown flow:", name)
+        end
     end
 end
 
