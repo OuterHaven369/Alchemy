@@ -1,10 +1,17 @@
-local M = M or {}
+local M = {
+    config = {
+        disableKeyMappings = false,
+        ai_provider = 'openai',
+        model = 'gpt-4',
+        api_key = nil
+    }
+}
 
 local core = require('alchemy.core')
 print("Configuring Alchemy...")
 
 -- Registering modules
-local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
+local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control", "flow_manager"}
 for _, moduleName in ipairs(modules) do
     print("Registering module:", moduleName)
     core.register_module(moduleName) -- Corrected, no additional parameter needed
@@ -42,6 +49,42 @@ function M.setup(opts)
             core.invoke_flow(opts.args)
         end, {desc = 'Invoke an Alchemy flow', nargs = "*"})
 
+        vim.api.nvim_create_user_command('ACreateFlow', function(opts)
+            local flow_manager = core.get_module('flow_manager')
+            if flow_manager then
+                local name = opts.fargs[1]
+                local instructions = table.concat(opts.fargs, ' ', 2)
+                flow_manager.create_flow(name, { instructions = instructions })
+            end
+        end, {desc = 'Create a simple flow', nargs = '+'})
+
+        vim.api.nvim_create_user_command('AScheduleFlow', function(opts)
+            local flow_manager = core.get_module('flow_manager')
+            if flow_manager then
+                local name = opts.fargs[1]
+                local interval = tonumber(opts.fargs[2]) or 0
+                flow_manager.schedule_flow(name, interval)
+            end
+        end, {desc = 'Schedule a flow to run on an interval', nargs = '+'})
+
+        vim.api.nvim_create_user_command('AAddSubflow', function(opts)
+            local flow_manager = core.get_module('flow_manager')
+            if flow_manager then
+                local parent = opts.fargs[1]
+                local child = opts.fargs[2]
+                flow_manager.add_subflow(parent, child)
+            end
+        end, {desc = 'Attach a subflow to another flow', nargs = 2})
+
+        vim.api.nvim_create_user_command('ACreateFlowAI', function(opts)
+            local flow_manager = core.get_module('flow_manager')
+            if flow_manager then
+                local name = opts.fargs[1]
+                local prompt = table.concat(opts.fargs, ' ', 2)
+                flow_manager.create_flow_from_ai(name, prompt)
+            end
+        end, {desc = 'Use the AI to generate and register a flow', nargs = '+'})
+
         vim.api.nvim_create_user_command('ARunTests', function(opts)
             local test_runner = core.get_module('test_runner') -- Correct way to access modules
             if test_runner then
@@ -70,7 +113,7 @@ function M.setup(opts)
     end
 
     -- Dynamically requiring and registering flows and modules...
-    local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control"}
+    local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control", "flow_manager"}
     for _, moduleName in ipairs(modules) do
         core.register_module(moduleName)
     end
