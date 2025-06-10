@@ -43,8 +43,13 @@ git clone https://github.com/OuterHaven369/Alchemy.git ~/.config/nvim/plugins/Al
 Then, add the following to your `init.lua` or equivalent Neovim configuration file:
 
 ```lua
-require('alchemy').setup()
+require('alchemy').setup({
+    api_key = 'YOUR_OPENAI_API_KEY'
+})
 ```
+
+Alchemy will use this key when contacting the OpenAI API. If you omit
+`api_key`, the plugin falls back to the `OPENAI_API_KEY` environment variable.
 
 ## Usage
 
