@@ -4,6 +4,8 @@ local M = {
     flows = {}
 }
 
+local log = require('alchemy.log')
+
 function M.create_flow(name, opts)
     opts = opts or {}
     M.flows[name] = {
@@ -11,7 +13,7 @@ function M.create_flow(name, opts)
         model = opts.model or 'gpt-4',
         instructions = opts.instructions or '',
         run = opts.run or function()
-            print('No run function defined for ' .. name)
+            log.debug('No run function defined for ' .. name)
         end,
         subflows = {},
         timers = {}
@@ -22,14 +24,14 @@ function M.update_instructions(name, instructions)
     if M.flows[name] then
         M.flows[name].instructions = instructions
     else
-        print('Flow not found: ' .. name)
+        log.debug('Flow not found: ' .. name)
     end
 end
 
 function M.run_flow(name, ...)
     local flow = M.flows[name]
     if not flow then
-        print('Flow not found: ' .. name)
+        log.debug('Flow not found: ' .. name)
         return
     end
 
@@ -44,7 +46,7 @@ end
 
 function M.add_subflow(parent, child)
     if not (M.flows[parent] and M.flows[child]) then
-        print('Cannot add subflow, unknown flow')
+        log.debug('Cannot add subflow, unknown flow')
         return
     end
     table.insert(M.flows[parent].subflows, child)
@@ -53,7 +55,7 @@ end
 function M.schedule_flow(name, interval)
     local flow = M.flows[name]
     if not flow then
-        print('Flow not found: ' .. name)
+        log.debug('Flow not found: ' .. name)
         return
     end
 
@@ -68,7 +70,7 @@ end
 function M.stop_schedules(name)
     local flow = M.flows[name]
     if not flow then
-        print('Flow not found: ' .. name)
+        log.debug('Flow not found: ' .. name)
         return
     end
 

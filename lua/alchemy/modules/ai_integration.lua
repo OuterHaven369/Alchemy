@@ -1,6 +1,7 @@
 -- ai_integration.lua
 local M = {}
 local config = require('alchemy').config  -- Assuming 'alchemy' is the namespace for your plugin.
+local log = require('alchemy.log')
 
 -- Import the necessary modules
 local api = vim.api
@@ -12,7 +13,7 @@ function M.interact_with_ai(message, opts)
     opts = opts or {}
     local api_key = config.api_key
     if not api_key or api_key == "" then
-        print("API key is not set. Please configure the API key through the plugin setup.")
+        log.debug("API key is not set. Please configure the API key through the plugin setup.")
         return
     end
 
@@ -20,7 +21,7 @@ function M.interact_with_ai(message, opts)
     local model = opts.model or config.model or 'gpt-4'
 
     if provider ~= 'openai' then
-        print('AI provider ' .. provider .. ' is not supported.')
+        log.debug('AI provider ' .. provider .. ' is not supported.')
         return
     end
 
@@ -53,7 +54,7 @@ function M.interact_with_ai(message, opts)
     }
 
     if not res then
-        print("Error sending request to OpenAI:", err)
+        log.debug("Error sending request to OpenAI:", err)
         return
     end
 
@@ -65,7 +66,7 @@ function M.interact_with_ai(message, opts)
         local ai_response = response.choices[1].message.content
         api.nvim_buf_set_lines(0, -1, -1, false, { ai_response })
     else
-        print("Failed to get a valid response from AI.")
+        log.debug("Failed to get a valid response from AI.")
     end
 end
 
@@ -74,7 +75,7 @@ function M.generate_instructions(prompt, opts)
     opts = opts or {}
     local api_key = config.api_key
     if not api_key or api_key == "" then
-        print("API key is not set. Please configure the API key through the plugin setup.")
+        log.debug("API key is not set. Please configure the API key through the plugin setup.")
         return nil
     end
 
@@ -82,7 +83,7 @@ function M.generate_instructions(prompt, opts)
     local model = opts.model or config.model or 'gpt-4'
 
     if provider ~= 'openai' then
-        print('AI provider ' .. provider .. ' is not supported.')
+        log.debug('AI provider ' .. provider .. ' is not supported.')
         return nil
     end
 
@@ -111,7 +112,7 @@ function M.generate_instructions(prompt, opts)
     }
 
     if not res then
-        print("Error sending request to OpenAI:", err)
+        log.debug("Error sending request to OpenAI:", err)
         return nil
     end
 

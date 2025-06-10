@@ -1,10 +1,11 @@
 local M = {}
+local log = require('alchemy.log')
 
 function M.commit(message)
-  print("Committing with message:", message)
+  log.debug("Committing with message:", message)
   local cmd = string.format("git commit -am %q", message)
   local result = vim.fn.system(cmd)
-  print("Commit result:", result)
+  log.debug("Commit result:", result)
 end
 
 return M
