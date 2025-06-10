@@ -18,9 +18,6 @@ for _, moduleName in ipairs(modules) do
 end
 print("Dynamic modules loaded")
 
-
-
-
 function M.setup(opts)
     opts = opts or {}
     M.config = vim.tbl_extend('force', M.config, opts)
@@ -30,9 +27,9 @@ function M.setup(opts)
     print("Before setting disableKeyMappings:", vim.inspect(opts))
     local disableKeyMappings = opts.disableKeyMappings or false
     print("After setting disableKeyMappings:", disableKeyMappings)
-    
+
     print("Alchemy configured with options:", vim.inspect(opts))
-    
+
     -- Example: Setup key mappings only if not disabled by opts
     if not M.config.disableKeyMappings then
         -- Key mappings and commands
@@ -44,7 +41,7 @@ function M.setup(opts)
                 print("Error: code_generator module not found")
             end
         end, {desc = 'Generate code using AI', nargs = "*"})
-        
+
         vim.api.nvim_create_user_command('AInvokeFlow', function(opts)
             core.invoke_flow(opts.args)
         end, {desc = 'Invoke an Alchemy flow', nargs = "*"})
@@ -105,7 +102,7 @@ function M.setup(opts)
                 documentation_generator.generate_documentation(opts.args)
             end
         end, {desc = 'Generate documentation for the codebase', nargs = "*"})
-        
+
         -- Setting key mappings
         vim.api.nvim_set_keymap('n', '<leader>ag', ':AGenerateCode<CR>', {noremap = true, silent = true})
         vim.api.nvim_set_keymap('n', '<leader>af', ':AInvokeFlow<CR>', {noremap = true, silent = true})
@@ -117,7 +114,7 @@ function M.setup(opts)
     for _, moduleName in ipairs(modules) do
         core.register_module(moduleName)
     end
-    
+
     local flows = {"validation_flow", "feedback_loop"}
     for _, flowName in ipairs(flows) do
         core.register_flow(flowName)
@@ -127,3 +124,4 @@ function M.setup(opts)
 end
 
 return M
+
