@@ -4,6 +4,7 @@ local log = require('alchemy.log')
 -- Commit all changes in the current repository.
 -- Adds untracked files and provides basic error handling.
 function M.commit(message)
+  message = message or "Update"
   log.debug("Committing with message:", message)
 
   local in_repo = vim.fn.systemlist("git rev-parse --is-inside-work-tree")[1]

@@ -105,6 +105,12 @@ flow management features. After installing `busted`, run:
 busted tests
 ```
 
+### Version Control Helpers
+
+The included helper functions wrap common git operations. When calling
+`version_control.commit()` without an argument, the commit message defaults
+to `"Update"`.
+
 # License Overview
 
 This project is generously offered under a dual-license model, designed to accommodate both open-source community projects and commercial initiatives. Our goal is to foster innovation and collaboration while also supporting the project's sustainable development.
