@@ -10,33 +10,22 @@ local M = {
 
 local log = require('alchemy.log')
 local core = require('alchemy.core')
-log.debug("Configuring Alchemy...")
-
--- Registering modules
-local modules = {"ai_integration", "code_analyzer", "code_generator", "documentation_generator", "test_runner", "version_control", "flow_manager"}
-for _, moduleName in ipairs(modules) do
-    log.debug("Registering module:", moduleName)
-    core.register_module(moduleName) -- Corrected, no additional parameter needed
-end
-log.debug("Dynamic modules loaded")
 
 function M.setup(opts)
     opts = opts or {}
     M.config = vim.tbl_extend('force', M.config, opts)
     log.set_config(M.config)
+    log.debug("Configuring Alchemy...")
     log.debug("Starting Alchemy setup with options:", vim.inspect(M.config))
 
-    opts = opts or {}
-    log.debug("Before setting disableKeyMappings:", vim.inspect(opts))
-    local disableKeyMappings = opts.disableKeyMappings or false
-    log.debug("After setting disableKeyMappings:", disableKeyMappings)
+    log.debug("Disable key mappings:", M.config.disableKeyMappings)
 
     log.debug("Alchemy configured with options:", vim.inspect(opts))
     -- Example: Setup key mappings only if not disabled by opts
     if not M.config.disableKeyMappings then
         -- Key mappings and commands
         vim.api.nvim_create_user_command('AGenerateCode', function(opts)
-            local code_generator = core.get_module('code_generator') -- Correct way to access modules
+            local code_generator = core.get_module('code_generator')
             if code_generator then
                 code_generator.generate(opts.args)
             else
@@ -85,21 +74,21 @@ function M.setup(opts)
         end, {desc = 'Use the AI to generate and register a flow', nargs = '+'})
 
         vim.api.nvim_create_user_command('ARunTests', function(opts)
-            local test_runner = core.get_module('test_runner') -- Correct way to access modules
+            local test_runner = core.get_module('test_runner')
             if test_runner then
                 test_runner.run_tests(opts.args)
             end
         end, {desc = 'Run tests', nargs = "*"})
 
         vim.api.nvim_create_user_command('AAnalyzeCode', function(opts)
-            local code_analyzer = core.get_module('code_analyzer') -- Correct way to access modules
+            local code_analyzer = core.get_module('code_analyzer')
             if code_analyzer then
                 code_analyzer.analyze_code(opts.args)
             end
         end, {desc = 'Analyze code for improvements and potential bugs', nargs = "*"})
 
         vim.api.nvim_create_user_command('AGenerateDocumentation', function(opts)
-            local documentation_generator = core.get_module('documentation_generator') -- Correct way to access modules
+            local documentation_generator = core.get_module('documentation_generator')
             if documentation_generator then
                 documentation_generator.generate_documentation(opts.args)
             end
